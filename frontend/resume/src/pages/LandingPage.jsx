@@ -30,7 +30,7 @@ const LandingPage = () => {
       <div className='flex flex-col md:flex-row items-center'>
          <div className='w-full md:w-1/2 pr-4 mb-8 md:mb-0'>
           <h1 className='text-5xl font-bold mb-6 leading-tight '
-          >Build your{" "}
+          >Build your{""}
             <span className='text-transparent bg-clip-text bg-[radial-gradient(circle,_#7182ff_0%,#3cff52_100%)] bg-[length:200%_200%] animate-text-shine'>
               Resume Effortlessly
             </span>
