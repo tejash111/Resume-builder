@@ -6,10 +6,11 @@ import Login from './pages/Auth/Login'
 import SignUp from './pages/Auth/SignUp'
 import Dashboard from './pages/Home/Dashboard'
 import EditResume from './pages/ResumeUpdate/EditResume'
+import UserProvider from './context/UserContext'
 
 const App = () => {
   return (
-    <>
+    <UserProvider>
     <div>
       <Router>
         <Routes>
@@ -32,7 +33,7 @@ const App = () => {
       }
     }}
     />
-    </>
+    </UserProvider>
   )
 }
 
