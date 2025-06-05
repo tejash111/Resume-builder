@@ -12,7 +12,7 @@ const genrateToken=(userId) => {
 //@access Public
 const registerUser = async (req,res) => {
     try {
-        const {name,email,password,porfileImageUrl}=req.body;
+        const {name,email,password,profileImageUrl}=req.body;
 
         //check if user alredy exists
         const userExists = await User.findOne({email});
@@ -29,7 +29,7 @@ const registerUser = async (req,res) => {
             name,
             email,
             password:hashedPassword,
-            porfileImageUrl,
+            profileImageUrl,
         });
 
         //return user data with jwt
@@ -37,7 +37,7 @@ const registerUser = async (req,res) => {
             _id:user._id,
             name:user.name,
             email:user.email,
-            porfileImageUrl:user.profileImageUrl,
+            profileImageUrl:user.profileImageUrl,
             token:genrateToken(user._id),
         });
     } catch (error){

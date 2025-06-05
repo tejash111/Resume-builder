@@ -1,18 +1,26 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 import Modal from '../componets/Modal';
 import Login from './Auth/Login';
 import SignUp from './Auth/SignUp';
+import { UserContext } from '../context/UserContext';
+import ProfileInfoCard from '../componets/cards/profileInfoCard';
+
 
 const LandingPage = () => {
-  const nagivate = useNavigate();
+  const {user}= useContext(UserContext)
+  const navigate = useNavigate();
 
   const [openAuthModal,setOpenAuthModal]=useState(false);
   const [currentPage,setCurrentPage]=useState("login")
 
   const handleCTA = () => {
-    
+    if (!user) {
+      setOpenAuthModal(true);
+    }else{
+      navigate("/dashboard")
+    }
   };
   return (
     <div className='w-full min-h-full bg-white '>
@@ -20,10 +28,10 @@ const LandingPage = () => {
       {/* header */}
       <header className='flex justify-between items-center mb-16'>
         <div className='text-xl font-bold'>Resume Builder</div>
-        <button className='bg-purple-100 text-sm font-semibold text-black px-7 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition-colors cursor-pointer' onClick={()=>setOpenAuthModal(true)}>
+       {user ? <ProfileInfoCard/> : <button className='bg-purple-100 text-sm font-semibold text-black px-7 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition-colors cursor-pointer' onClick={()=>setOpenAuthModal(true)}>
           Login / Sign Up 
         </button>
-        
+}
       </header>
 
       {/* hero content */}
@@ -46,7 +54,7 @@ const LandingPage = () => {
           <img src="" alt="" className='w-full rounded-lg '/>
          </div>
 
-         <section className='mt-5'>
+         <section className='mt-5 '>
           <h2 className='text-2xl font-bold text-center mb-12'>Features that Make you shine</h2>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
             <div className='bg-gray-50 p-6 rounded-xl shadow-sm hover:shadow-md transition'>

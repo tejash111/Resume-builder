@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { validateEmail } from '../../utils/helper'
 import Input from '../../componets/inputs/Input'
 import ProfilePhotoSelector from '../../componets/inputs/ProfilePhotoSelector'
+import axiosInstance from '../../utils/axiosInstance'
+import { API_PATHS } from '../../utils/ApiPaths'
+import { UserContext } from '../../context/UserContext'
+import uploadImage from '../../utils/UploadImage'
 
 const SignUp = ({setCurrentPage}) => {
   const [profilepic,setProfilePic]=useState(null)
@@ -12,7 +16,8 @@ const SignUp = ({setCurrentPage}) => {
 
   const [error,setError]=useState(null)
 
-  const nagivate=useNavigate();
+  const {updateUser} = useContext(UserContext);
+  const navigate=useNavigate();
 
   //handle Signup from submit
   const handleSignUp = async (e) => {
@@ -35,10 +40,35 @@ const SignUp = ({setCurrentPage}) => {
     setError("")
 
     //sign up api call
+
     try{
 
-    }catch(error){
+      //upload image if present 
+      if (profilepic){
+        const imageUploadRes =await uploadImage(profilepic)
+        profileImageUrl= imageUploadRes.imageUrl || "";
+      }
 
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        name : fullName,
+        email,
+        password,
+        profileImageUrl,
+      });
+
+      const {token} = response.data
+
+      if (token){
+        localStorage.setItem("token",token);
+        updateUser(response.data)
+        navigate("/dashboard");
+      }
+    }catch(error){
+      if (error.response && error.response.data.message){
+        setError(error.response.data.message);
+      }else{
+        setError("Something went wrong , pls try again");
+      }
     }
   }
 
@@ -47,7 +77,7 @@ const SignUp = ({setCurrentPage}) => {
       <h3 className='text-lg font-semibold text-black'>Create an Account</h3>
       <p className='text-xs text-slate-700 mt-[5px]mb-6 '>Join us today by entering your details below.</p>
 
-      <form action="">
+      <form onSubmit={handleSignUp}>
 
         <ProfilePhotoSelector image={profilepic} setImage={setProfilePic}/>
 
