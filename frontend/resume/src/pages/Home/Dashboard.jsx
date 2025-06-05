@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   useEffect(()=>{
     fetchAllResumes();
-  },[]);
+  },[])
   return (
     <div>
   
