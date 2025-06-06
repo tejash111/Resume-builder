@@ -5,9 +5,11 @@ import {useReactToPrint} from 'react-to-print'
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/ApiPaths';
 import TitleInput from '../../componets/inputs/TitleInput';
-import { LuArrowLeft, LuCircleAlert, LuDownload, LuPalette, LuSave, LuTrash } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuCircleAlert, LuDownload, LuPalette, LuSave, LuTrash } from 'react-icons/lu';
 import StepProgress from '../../componets/StepProgress';
 import ProfileInfoForm from './Forms/ProfileInfoForm';
+import ContactInfoForm from './Forms/ContactInfoForm';
+import WorkExperienceForm from './Forms/WorkExperienceForm';
 
 const EditResume = () => {
   const {resumeId}=useParams()
@@ -21,7 +23,7 @@ const EditResume = () => {
   const [openThemeSelector,setOpenThemeSelector]=useState(false)
   const [openPreviewModal,setOpenPreviewModal]=useState(false)
 
-  const [currentPage,setCurrentPage]=useState('profile-info')
+  const [currentPage,setCurrentPage]=useState('work-experience')
   const [progress,setProgress]=useState(0)
   const [resumeData,setResumeData]=useState({
     title : "",
@@ -114,23 +116,85 @@ const EditResume = () => {
         }}
         onNext={validateAndNext}
         />
-      )
+      );
+
+      case "contact-info":
+        return(
+          <ContactInfoForm
+          contactInfo = {resumeData?.contactInfo}
+          updateSection= {(key,value)=>{
+            updateSection("contactInfo",key,value);
+          }}
+          />
+        )
+
+        case "work-experience":
+          return(
+          <WorkExperienceForm
+          contactInfo = {resumeData?.workExperience}
+          updateArrayItems={(index,key,value)=>{
+            updateArrayItems("workExperience",index,value,key);
+          }}
+          addArrayItem={(newItem) => addArrayItem("workExperience",newItem)}
+          removeArrayItem={(index)=> removeArrayItem("workExperience",index)}
+          />
+        )
       default :
     return null;
     };
   };
 
   //update simple nested object (like profileinfo , contact info etc.)
-  const updateSection = (section,key,value)=> {};
+  const updateSection = (section,key,value)=> {
+    setResumeData((prev)=> ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [key]:value,
+      },
+    }))
+  };
 
   //update array item like workexp[0] , sills , etc
-  const updateArrayItems = (section,index,key,value)=> {};
+  const updateArrayItems = (section,index,key,value)=> {
+    setResumeData((prev)=>{
+      const updatedArray = [...prev[section]];
+
+      if (key=== null){
+        updatedArray[index] = value;  //for simple strings like in interests
+      }else{
+        updatedArray[index]={
+          ...updatedArray[index],
+          [key]:value,
+        }
+      }
+
+      return {
+        ...prev,
+        [section]:updatedArray,
+      };
+    });
+  };
 
   //add items to array 
-    const addArrayItem = (section,newItem)=> {}
+    const addArrayItem = (section,newItem)=> {
+      setResumeData((prev)=>({
+        ...prev,
+        [section]:[...prev[section],newItem],
+      }));
+    }
 
   //remove items from array
-  const removeArrayItem = (section,index)=> {}
+  const removeArrayItem = (section,index)=> {
+    setResumeData((prev)=>{
+      const updatedArray = [...prev[section]];
+      updatedArray.splice(index,1);
+      return {
+        ...prev,
+        [section]:updatedArray,
+      };
+    })
+  }
 
   //fetch resume info by id
   const fetchResumeInfoById = async () => {
@@ -166,7 +230,9 @@ const EditResume = () => {
   //upload thumbnail and resume profile img
   const uploadResumeImages = async () => {}
 
-  const updateResumeDetails = async () => {}
+  const updateResumeDetails = async () => {
+
+  }
 
   //delete reusme
   const handleDeleteResume = async () => {}
@@ -253,7 +319,7 @@ const EditResume = () => {
                   )}
                   {currentPage === 'additionalInfo'? "preview and downlaod" : "next"}
                   {currentPage !== 'addionalInfo' && (
-                    <LuArrowLeft className='text-[16px]'/>
+                    <LuArrowRight className='text-[16px]'/>
                   )}
                 </button>
               </div>
