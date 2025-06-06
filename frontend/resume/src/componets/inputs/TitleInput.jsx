@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { LuCheck, LuPencil } from 'react-icons/lu';
 
-const TitleInput = () => {
+const TitleInput = ({title,setTitle}) => {
     const [showInput,setShowInput]= useState(false);
   return (
     <div className='flex items-center gap-3'>
