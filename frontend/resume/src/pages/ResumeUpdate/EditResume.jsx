@@ -10,6 +10,10 @@ import StepProgress from '../../componets/StepProgress';
 import ProfileInfoForm from './Forms/ProfileInfoForm';
 import ContactInfoForm from './Forms/ContactInfoForm';
 import WorkExperienceForm from './Forms/WorkExperienceForm';
+import EducationDetailForm from './Forms/EducationDetailForm';
+import SkillsInfoForm from './Forms/SkillsInfoForm';
+import ProjectsDetailForm from './Forms/ProjectsDetailForm';
+import CertificateInfoForm from './Forms/CertificateInfoForm';
 
 const EditResume = () => {
   const {resumeId}=useParams()
@@ -23,7 +27,7 @@ const EditResume = () => {
   const [openThemeSelector,setOpenThemeSelector]=useState(false)
   const [openPreviewModal,setOpenPreviewModal]=useState(false)
 
-  const [currentPage,setCurrentPage]=useState('work-experience')
+  const [currentPage,setCurrentPage]=useState('certifications')
   const [progress,setProgress]=useState(0)
   const [resumeData,setResumeData]=useState({
     title : "",
@@ -131,12 +135,57 @@ const EditResume = () => {
         case "work-experience":
           return(
           <WorkExperienceForm
-          contactInfo = {resumeData?.workExperience}
+          workExperience = {resumeData?.workExperience}
           updateArrayItems={(index,key,value)=>{
-            updateArrayItems("workExperience",index,value,key);
+            updateArrayItems("workExperience",index,key,value);
           }}
           addArrayItem={(newItem) => addArrayItem("workExperience",newItem)}
           removeArrayItem={(index)=> removeArrayItem("workExperience",index)}
+          />
+        )
+
+         case "education-info":
+          return(
+          <EducationDetailForm
+          educationInfo = {resumeData?.education}
+          updateArrayItems={(index,key,value)=>{
+            updateArrayItems("education",index,key,value);
+          }}
+          addArrayItem={(newItem) => addArrayItem("education",newItem)}
+          removeArrayItem={(index)=> removeArrayItem("education",index)}
+          />
+        )
+         case "skills":
+          return(
+          <SkillsInfoForm
+          skillsInfo = {resumeData?.skills}
+          updateArrayItems={(index,key,value)=>{
+            updateArrayItems("skills",index,key,value);
+          }}
+          addArrayItem={(newItem) => addArrayItem("skills",newItem)}
+          removeArrayItem={(index)=> removeArrayItem("skills",index)}
+          />
+        )
+         case "projects":
+          return(
+          <ProjectsDetailForm
+          projectInfo = {resumeData?.projects}
+          updateArrayItems={(index,key,value)=>{
+            updateArrayItems("projects",index,key,value);
+          }}
+          addArrayItem={(newItem) => addArrayItem("projects",newItem)}
+          removeArrayItem={(index)=> removeArrayItem("projects",index)}
+          />
+        )
+         case "certifications":
+          return(
+          <CertificateInfoForm
+          certificateInfo = {resumeData?.certifications}
+          updateArrayItems={(index,key,value)=>{
+            updateArrayItems("certifications",index,key,value);
+          }}
+          addArrayItem={(newItem) => addArrayItem("certifications",newItem)}
+          removeArrayItem={(index)=> removeArrayItem("certifications",index)}
           />
         )
       default :
