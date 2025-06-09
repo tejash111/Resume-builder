@@ -23,7 +23,7 @@ const ResumeSummaryCard = ({imgUrl,title,lastUpdated,onSelect}) => {
         <div className='p-4'>
             {
                 imgUrl? (
-                    <img src={imageUrl} alt="" className='w-[100%] h-[200px] rounded'/>
+                    <img src={imgUrl} alt="" className='w-[100%] h-[200px] rounded'/>
                 ) : (<div></div>
            ) }
         </div>
