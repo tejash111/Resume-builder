@@ -27,7 +27,7 @@ const LandingPage = () => {
       <div className='container mx-auto px-4 py-6   '>
       {/* header */}
       <header className='flex justify-between items-center mb-16'>
-        <div className='text-xl font-bold'>Resume Builder</div>
+        <div className='text-xl font-bold'>Pitch-Perfect</div>
        {user ? <ProfileInfoCard/> : <button className='bg-purple-100 text-sm font-semibold text-black px-7 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition-colors cursor-pointer' onClick={()=>setOpenAuthModal(true)}>
           Login / Sign Up 
         </button>
@@ -35,26 +35,24 @@ const LandingPage = () => {
       </header>
 
       {/* hero content */}
-      <div className='flex flex-col md:flex-row items-center'>
-         <div className='w-full md:w-1/2 pr-4 mb-8 md:mb-0'>
-          <h1 className='text-5xl font-bold mb-6 leading-tight '
-          >Build your{""}
-            <span className='text-transparent bg-clip-text bg-[radial-gradient(circle,_#7182ff_0%,#3cff52_100%)] bg-[length:200%_200%] animate-text-shine'>
-              Resume Effortlessly
-            </span>
+      <div className='flex flex-col  items-center'>
+         <div className='w-full pr-4 mb-8 md:mb-0  '>
+          <h1 className='flex items-center justify-center text-5xl font-bold mb-6 leading-tight '
+          >Get Hired or Get Fucked choise is yours
+           
           </h1>
-          <p className='text-lg text-gray-700 mb-8'>
+          <p className='text-lg text-gray-700 mb-8 flex items-center justify-center'>
             craft a standout resume in minutes with our smart and intiutive resume builder.
           </p>
-          <button className='bg-black text-sm font-semibold text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer' onClick={handleCTA}>
-            Get Started
-          </button>
+          <div className='w-full pr-4 mb-8 md:mb-0 flex justify-center'>
+  <button className='bg-black text-sm flex items-center justify-center font-semibold text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer' onClick={handleCTA}>
+    Get Started
+  </button>
+</div>
          </div>
-         <div className='w-full md:w-1/2'>
-          <img src="" alt="" className='w-full rounded-lg '/>
-         </div>
+         
 
-         <section className='mt-5 '>
+         {/* <section className='mt-5 '>
           <h2 className='text-2xl font-bold text-center mb-12'>Features that Make you shine</h2>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
             <div className='bg-gray-50 p-6 rounded-xl shadow-sm hover:shadow-md transition'>
@@ -77,7 +75,7 @@ const LandingPage = () => {
             </div>
 
           </div>
-         </section>
+         </section> */}
       </div>
       </div>
       <Modal

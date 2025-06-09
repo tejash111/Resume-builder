@@ -17,6 +17,8 @@ import CertificateInfoForm from './Forms/CertificateInfoForm';
 import RenderResume from '../../componets/ResumeTemplates/RenderResume';
 import { captureElementAsImage, dataURLtoFile, fixTailwindColors } from '../../utils/helper';
 import {Toaster,toast} from "react-hot-toast"
+import Modal from '../../componets/Modal';
+import ThemeSelector from './ThemeSelector';
 
 const EditResume = () => {
   const { resumeId } = useParams()
@@ -479,7 +481,18 @@ toast.error("failed to uplaod images");
 };
 
   //delete reusme
-  const handleDeleteResume = async () => { }
+  const handleDeleteResume = async () => { 
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.delete(API_PATHS.RESUME.DELETE(resumeId));
+      toast.success('resume deleted successfully')
+      navigate('/dashboard')
+    } catch (error) {
+      console.error("error capturing image",error)
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   //download resume
   const reactToPrintFn = useReactToPrint({ contentRef: resumeDownloadRef });
@@ -586,6 +599,44 @@ toast.error("failed to uplaod images");
           </div>
         </div>
       </div>
+
+      <Modal
+      isOpen={openThemeSelector}
+      onClose={()=>setOpenThemeSelector(false)}
+      title="Chnage theme"
+      >
+        <div className='w-[90vw] h-[80vh]'>
+              <ThemeSelector
+              selectedTheme={resumeData?.template}
+              setSelectedTheme={(value)=>{
+                setResumeData((prevState)=> ({
+                  ...prevState,
+                  template:value || prevState.template
+                }))
+              }}
+              resumeData={null}
+              onClose={()=>setOpenThemeSelector(false)}
+              />
+        </div>
+      </Modal>
+
+      <Modal
+  isOpen={openPreviewModal}
+  onClose={() => setOpenPreviewModal(false)}
+  title={resumeData.title}
+  showActionBtn
+  actionBtnText="Download"
+  actionBtnIcon={<LuDownload className="text-[16px]" />}
+  onActionClick={() => reactToPrintFn()}
+>
+  <div ref={resumeDownloadRef} className="w-[98vw] h-[90vh]">
+    <RenderResume
+      templateId={resumeData?.template?.theme || ""}
+      resumeData={resumeData}
+      colorPalette={resumeData?.template?.colorPalette || []}
+    />
+  </div>
+</Modal>
     </DashboardLayout>
   )
 }

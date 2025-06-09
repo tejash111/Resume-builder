@@ -31,7 +31,7 @@ const Title = ({ text, color }) => {
 };
 
 
-const TemplateOne = ({
+const TemplateTwo = ({
     resumeData,
     colorPalette,
     containerWidth
@@ -221,4 +221,4 @@ const TemplateOne = ({
     )
 }
 
-export default TemplateOne
+export default TemplateTwo
