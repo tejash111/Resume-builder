@@ -10,7 +10,7 @@ const genrateToken=(userId) => {
 //@desc resgister a new user
 //@route POST /api/auth/register
 //@access Public
-const registerUser = async (req,res) => {
+const registerUser = async (req,res,next) => {
     try {
         const {name,email,password,profileImageUrl}=req.body;
 
@@ -32,6 +32,15 @@ const registerUser = async (req,res) => {
             profileImageUrl,
         });
 
+        if (user){
+        const token = genrateToken(user?._id)
+
+        res.cookie("token",token,{
+          httpOnly:true,
+          maxAge:3 * 24 * 60 * 60 * 1000
+        });
+    }
+
         //return user data with jwt
         res.status(201).json({
             _id:user._id,
@@ -40,6 +49,7 @@ const registerUser = async (req,res) => {
             profileImageUrl:user.profileImageUrl,
             token:genrateToken(user._id),
         });
+        next()
     } catch (error){
         res.status(500).json({message: "server error",error:error.message})
     }
@@ -62,6 +72,12 @@ const loginUser = async (req,res) => {
         if (!isMatch) {
             return res.status(500).json({message:"Invalid email or password"});
         }
+
+        const token = genrateToken(user?._id);
+    res.cookie("token",token,{
+      httpOnly:true,
+      maxAge:3 * 24 * 60 * 60 * 1000
+    })
 
         //Return user data with jwt
         res.json({

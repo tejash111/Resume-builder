@@ -5,7 +5,7 @@ import { useReactToPrint } from 'react-to-print'
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/ApiPaths';
 import TitleInput from '../../componets/inputs/TitleInput';
-import { LuArrowLeft, LuArrowRight, LuCircleAlert, LuDownload, LuPalette, LuSave, LuTrash } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuBrain, LuCircleAlert, LuDownload, LuPalette, LuSave, LuTrash } from 'react-icons/lu';
 import StepProgress from '../../componets/StepProgress';
 import ProfileInfoForm from './Forms/ProfileInfoForm';
 import ContactInfoForm from './Forms/ContactInfoForm';
@@ -15,8 +15,8 @@ import SkillsInfoForm from './Forms/SkillsInfoForm';
 import ProjectsDetailForm from './Forms/ProjectsDetailForm';
 import CertificateInfoForm from './Forms/CertificateInfoForm';
 import RenderResume from '../../componets/ResumeTemplates/RenderResume';
-import { captureElementAsImage, dataURLtoFile, fixTailwindColors } from '../../utils/helper';
-import {Toaster,toast} from "react-hot-toast"
+import { dataURLtoFile, fixTailwindColors } from '../../utils/helper';
+import { Toaster, toast } from "react-hot-toast"
 import Modal from '../../componets/Modal';
 import ThemeSelector from './ThemeSelector';
 
@@ -31,9 +31,9 @@ const EditResume = () => {
 
   const [openThemeSelector, setOpenThemeSelector] = useState(false)
   const [openPreviewModal, setOpenPreviewModal] = useState(false)
+  const [openAIReview, setOpenAIReview] = useState(false)
 
   const [currentPage, setCurrentPage] = useState('profile-info')
-  const [progress, setProgress] = useState(0)
   const [resumeData, setResumeData] = useState({
     title: "",
     thumbnailLink: "",
@@ -73,12 +73,11 @@ const EditResume = () => {
         endDate: ""
       },
     ],
-    skills: [
-      {
-        name: "",
-        progress: 0,
-      },
-    ],
+    skills:
+    {
+      name: "",
+    },
+
     projects: [
       {
         title: "",
@@ -102,6 +101,8 @@ const EditResume = () => {
     ],
     interests: [""],
   });
+  console.log(resumeData);
+
 
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false)
@@ -123,6 +124,11 @@ const EditResume = () => {
           errors.push("Valid email is required.");
         if (!phone.trim())
           errors.push("Valid 10-digit phone number is required");
+        break;
+
+      case "skills":
+        const { name } = resumeData.skills;
+        if (!name.trim()) errors.push("Skills is reqd")
         break;
 
       case "work-experience":
@@ -151,14 +157,7 @@ const EditResume = () => {
         );
         break;
 
-      case "skills":
-        resumeData.skills.forEach(({ name, progress }, index) => {
-          if (!name.trim())
-            errors.push(`Skill name is required in skill ${index + 1}`);
-          if (progress < 1 || progress > 100)
-            errors.push(`Skill progress must be between 1 and 100 in skill ${index + 1}`);
-        });
-        break;
+
 
       case "projects":
         resumeData.projects.forEach(({ title, description }, index) => {
@@ -198,9 +197,9 @@ const EditResume = () => {
     const pages = [
       "profile-info",
       "contact-info",
+      "skills",
       "work-experience",
       "education-info",
-      "skills",
       "projects",
       "certifications",
 
@@ -214,9 +213,6 @@ const EditResume = () => {
       setCurrentPage(pages[nextIndex]);
 
       //set progress as percnetage
-      const percent = Math.round((nextIndex / (pages.length - 1)) * 100);
-      setProgress(percent);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -225,9 +221,9 @@ const EditResume = () => {
     const pages = [
       "profile-info",
       "contact-info",
+      "skills",
       "work-experience",
       "education-info",
-      "skills",
       "projects",
       "certifications",
 
@@ -242,7 +238,6 @@ const EditResume = () => {
 
     //set progress as percnetage
     const percent = Math.round((prevIndex / (pages.length - 1)) * 100);
-    setProgress(percent);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -297,12 +292,9 @@ const EditResume = () => {
         return (
           <SkillsInfoForm
             skillsInfo={resumeData?.skills}
-            updateArrayItems={(index, key, value) => {
-              updateArrayItems("skills", index, key, value);
-            }}
-            addArrayItem={(newItem) => addArrayItem("skills", newItem)}
-            removeArrayItem={(index) => removeArrayItem("skills", index)}
+            updateSection={(key, value) => updateSection("skills", key, value)}
           />
+
         )
       case "projects":
         return (
@@ -419,8 +411,7 @@ const EditResume = () => {
     try {
       setIsLoading(true)
 
-      fixTailwindColors(resumeRef.current);
-      const imageDataUrl = await captureElementAsImage(resumeRef.current);
+
 
       //convert base64 to file
       const thumbnailFile = dataURLtoFile(
@@ -442,57 +433,58 @@ const EditResume = () => {
 
       const { thumbnailLink, profilePreviewUrl } = uploadResponse.data;
 
-      console.log("RESUME_DATA___",resumeData);
+      console.log("RESUME_DATA___", resumeData);
 
       //call the second api to update other reusme data
-      await updateResumeDetails(thumbnailLink,profilePreviewUrl);
-      
+      await updateResumeDetails(thumbnailLink, profilePreviewUrl);
+
       toast.success("Resume Updated successfully");
       navigate("/dashboard")
-      
+
     } catch (error) {
-console.error("error uploading images",error);
-toast.error("failed to uplaod images");
+      console.error("error uploading images", error);
+      toast.error("failed to uplaod images");
     } finally {
       setIsLoading(false);
     }
   }
 
- const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {
-  try {
-    setIsLoading(true);
-    
-    const response = await axiosInstance.put(
-      API_PATHS.RESUME.UPDATE(resumeId),
-      {
-        ...resumeData,
-        thumbnailLink: thumbnailLink || "",
-        profileInfo: {
-          ...resumeData.profileInfo,
-          profilePreviewUrl: profilePreviewUrl || "",
-        },
-      }
-    );
-  } catch (err) {
-    console.error("Error capturing image:", err);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {
+    try {
+      setIsLoading(true);
+
+      const response = await axiosInstance.put(
+        API_PATHS.RESUME.UPDATE(resumeId),
+        {
+          ...resumeData,
+          thumbnailLink: thumbnailLink || "",
+          profileInfo: {
+            ...resumeData.profileInfo,
+            profilePreviewUrl: profilePreviewUrl || "",
+          },
+        }
+      );
+    } catch (err) {
+      console.error("Error capturing image:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   //delete reusme
-  const handleDeleteResume = async () => { 
+  const handleDeleteResume = async () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.delete(API_PATHS.RESUME.DELETE(resumeId));
       toast.success('resume deleted successfully')
       navigate('/dashboard')
     } catch (error) {
-      console.error("error capturing image",error)
+      console.error("error capturing image", error)
     } finally {
       setIsLoading(false);
     }
   }
+
 
   //download resume
   const reactToPrintFn = useReactToPrint({ contentRef: resumeDownloadRef });
@@ -517,11 +509,40 @@ toast.error("failed to uplaod images");
     }
   }, [])
 
+  const Prompt = {
+    contents: [
+      {
+        parts: [
+          {
+            text: `
+You are an ATS system evaluator. Analyze the following resume data in JSON format and return:
+
+1. A resume score from 0 to 10 (use decimal like 8.5, not a whole number).
+2. A list of improvement suggestions in bullet point array form (max 8 tips).
+3. Focus on structure, keywords, formatting, typos, and ATS friendliness.
+
+Return result in JSON format like:
+{
+  "ats_score": <score>,
+  "improvements": [ ... ]
+}
+
+Here is the resume data:
+${JSON.stringify(resumeData)}
+          `
+          }
+        ]
+      }
+    ]
+  }
+
+
+
   return (
     <DashboardLayout>
-      <div><Toaster/></div>
+      <div><Toaster /></div>
       <div className=' mx-auto'>
-        <div className='flex items-center justify-between gap-5 bg-white rounded-lg border border-purple-100 py-3 px-4 mb-4  '>
+        <div className='flex items-center justify-between gap-5 bg-white rounded-lg border border-gray-100 py-3 px-4 mb-4  '>
           <TitleInput
             title={resumeData.title}
             setTitle={(value) =>
@@ -533,16 +554,16 @@ toast.error("failed to uplaod images");
           />
 
           <div className='flex items-center gap-4'>
-            <button className='btn-small-light '
-              onClick={() => setOpenThemeSelector(true)}
-            >
-              <LuPalette className='text-[16px]' />
-              <span className='hidden md:block'>Change Theme</span>
-            </button>
+
 
             <button className='btn-small-light ' onClick={handleDeleteResume}>
               <LuTrash className='text-[16px]' />
               <span className='hidden md:block'>Delete</span>
+            </button>
+
+            <button className='btn-small-light' onClick={() => setOpenPreviewModal(true)}>
+              <LuBrain className='text-[16px]' />
+              <span className='hidden md:block'>Get AI Review</span>
             </button>
 
             <button className='btn-small-light ' onClick={() => setOpenPreviewModal(true)}>
@@ -601,42 +622,62 @@ toast.error("failed to uplaod images");
       </div>
 
       <Modal
-      isOpen={openThemeSelector}
-      onClose={()=>setOpenThemeSelector(false)}
-      title="Chnage theme"
+        isOpen={openThemeSelector}
+        onClose={() => setOpenThemeSelector(false)}
+        title="Chnage theme"
       >
         <div className='w-[90vw] h-[80vh]'>
-              <ThemeSelector
-              selectedTheme={resumeData?.template}
-              setSelectedTheme={(value)=>{
-                setResumeData((prevState)=> ({
-                  ...prevState,
-                  template:value || prevState.template
-                }))
-              }}
-              resumeData={null}
-              onClose={()=>setOpenThemeSelector(false)}
-              />
+          <ThemeSelector
+            selectedTheme={resumeData?.template}
+            setSelectedTheme={(value) => {
+              setResumeData((prevState) => ({
+                ...prevState,
+                template: value || prevState.template
+              }))
+            }}
+            resumeData={null}
+            onClose={() => setOpenThemeSelector(false)}
+          />
         </div>
       </Modal>
 
+
+
+
       <Modal
-  isOpen={openPreviewModal}
-  onClose={() => setOpenPreviewModal(false)}
-  title={resumeData.title}
-  showActionBtn
-  actionBtnText="Download"
-  actionBtnIcon={<LuDownload className="text-[16px]" />}
-  onActionClick={() => reactToPrintFn()}
->
-  <div ref={resumeDownloadRef} className="w-[98vw] h-[90vh]">
-    <RenderResume
-      templateId={resumeData?.template?.theme || ""}
-      resumeData={resumeData}
-      colorPalette={resumeData?.template?.colorPalette || []}
-    />
-  </div>
-</Modal>
+        isOpen={openPreviewModal}
+        onClose={() => setOpenPreviewModal(false)}
+        title={resumeData.title}
+        showActionBtn
+        actionBtnText="Download"
+        actionBtnIcon={<LuDownload className="text-[16px]" />}
+        onActionClick={() => reactToPrintFn()}
+      >
+        <div className="flex justify-center items-start w-full max-h-[90vh]  overflow-auto  ">
+          <div className='flex justify-between'>
+            <div className='AI DIV'>
+              laskdjfasdlfkjaslkdfjaslkdkfjalskdfjaslkdfjaslkdjf
+            </div>
+            <div
+              ref={resumeDownloadRef}
+              className="relative bg-white resume-print"
+              style={{
+                width: '210mm',
+                minHeight: '297mm',
+                margin: '0 auto',
+              }}
+            >
+              <RenderResume
+                templateId={resumeData?.template?.theme || ""}
+                resumeData={resumeData}
+                colorPalette={resumeData?.template?.colorPalette || []}
+              />
+            </div>
+          </div>
+
+        </div>
+      </Modal>
+
     </DashboardLayout>
   )
 }

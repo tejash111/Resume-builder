@@ -14,13 +14,13 @@ const Modal = ({
     }) => {
         if(!isOpen) return null;
   return (
-    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/40 '>
+    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full '>
         {/* modal content */}
         <div className={`relative flex flex-col bg-white
-            shadow-lg overflow-hidden`}>
+             overflow-hidden`}>
             {/* modal Header */}
             {!hideHeader && (
-                <div className='flex items-center justify-between p-4 border-b border-gray-200'>
+                <div className='flex items-center justify-between p-4 '>
                     <h3 className='md:text-lg font-medium text-gray-900'>{title}</h3>
                     {showActionBtn && (
                          <button

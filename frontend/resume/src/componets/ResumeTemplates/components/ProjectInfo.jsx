@@ -11,7 +11,7 @@ const ProjectInfo = ({
   isPreview,
 }) => {
   return (
-    <div className="mb-5">
+    <div className="mb-2">
       <h3
         className={`${
           isPreview ? "text-xs" : "text-base"
@@ -19,7 +19,7 @@ const ProjectInfo = ({
       >
         {title}
       </h3>
-      <p className="text-sm text-gray-700 font-medium mt-1">{description}</p>
+      <p className="font-normal ">{description}</p>
 
       <div className="flex items-center gap-3 mt-2">
         {githubLink && (

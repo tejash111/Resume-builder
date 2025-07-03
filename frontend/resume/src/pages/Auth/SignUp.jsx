@@ -109,7 +109,7 @@ const SignUp = ({setCurrentPage}) => {
           Sign up
         </button>
         <p className='text-[13px] text-slate-800 mt-3'>Already an account?{" "}
-          <button className='font-medium text-primary underline cursor-pointer' onClick={()=>{
+          <button className='font-medium text-blue-800 underline cursor-pointer' onClick={()=>{
             setCurrentPage("login")
           }}>Login</button>
         </p>

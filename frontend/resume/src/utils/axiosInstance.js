@@ -8,17 +8,14 @@ const axiosInstance = axios.create({
         "Content-Type" : "application/json",
         Accept: "application/json",
     },
+    withCredentials:true
 });
 
 //request Interceptor
 axiosInstance.interceptors.request.use(
     (config) => {
-        const accessToken = localStorage.getItem('token');
+        return config
 
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        return config;
     },
     (error) => {
         return Promise.reject(error);

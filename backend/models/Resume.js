@@ -49,12 +49,11 @@ const ResumeSchema= new mongoose.Schema(
             endDate:String
         },
     ],
-    skills: [
+    skills: 
         {
             name:String,
-            progress:Number
+           
         },
-    ],
     projects:[
         {
             title:String,
@@ -70,13 +69,11 @@ const ResumeSchema= new mongoose.Schema(
             year:String,
         },
     ],
-    languages:[
+    languages:
         {
             name:String,
-            progress:Number
         },
-    ],
-    interests: [String],
+    
 },
 {
     timestamps: {createdAt: "createdAt", updatedAt:"updatedAt"},

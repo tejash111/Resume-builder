@@ -7,7 +7,7 @@ const router=express.Router();
 //auth routes
 router.post("/register",registerUser);
 router.post("/login",loginUser);
-router.post("/profile",getUserProfile);
+router.get("/profile",protect,getUserProfile);
 
 
 const upload = require("../middlewares/uploadMiddleware");

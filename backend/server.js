@@ -4,6 +4,7 @@ const cors = require("cors")
 const path = require("path");
 const connectDB = require("./config/db");
 const resume = require("./models/Resume");
+const cookieParser = require("cookie-parser");
 
 const authRoutes= require("./routes/authRoutes")
 const resumeRoutes = require("./routes/resumeRoutes");
@@ -11,19 +12,19 @@ const resumeRoutes = require("./routes/resumeRoutes");
 const app = express();
 
 //middleware to handle cors
-app.use(
-    cors({
-        origin: process.env.CLIENT_URL || "*",
-        methods:["GET","POST","PUT","DELETE"],
-        allowedHeaders:["Content-Type", "Authorization"],
-    })
-)
+app.use(cors({
+  origin: 'http://localhost:5174', // your frontend URL
+  credentials: true
+}));
+
 
 //connect database
 connectDB();
 
 //middleware
 app.use(express.json());
+app.use(cookieParser())
+
 //app.use("/api/resume",resumeRoutes)
 
 //routes

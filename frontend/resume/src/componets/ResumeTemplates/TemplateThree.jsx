@@ -13,7 +13,6 @@ import EducationInfo from './components/EducationInfo';
 import { formatYearMonth } from '../../utils/helper';
 import WorkExperience from './components/WorkExperience';
 import ProjectInfo from './components/ProjectInfo';
-import SkillSection from './components/SkillSection';
 import CertificationInfo from './components/CertificationInfo';
 
 const DEFAULT_THEME = ["#EBFDFF", "#A1F4FD", "#CEFAFE", "#00B8DB", "#4A5565"];

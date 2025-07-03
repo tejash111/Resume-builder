@@ -44,13 +44,12 @@ const createResume = async (req,res) => {
                     endDate:"",
                 },
             ],
-            skills:[
+            skills:
                 {
                     name:"",
-                    progress:0,
 
                 },
-            ],
+            
             projects:[
                 {
                     title:"",

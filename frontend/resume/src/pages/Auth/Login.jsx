@@ -38,17 +38,13 @@ const Login = ({setCurrentPage}) => {
 
         const {token} =response.data;
 
-        if (token) {
-          localStorage.setItem("token",token);
-          updateUser(response.data);
-          navigate("/dashboard");
-        }
+        updateUser(response.data)
+        navigate("/dashboard")
     }catch(error){
         if (error.response && error.response.data.message) {
           setError(error.response.data.message);
         }
-        console.log(error);
-        
+        console.log(error);  
     }
   };
   return (
@@ -71,7 +67,7 @@ const Login = ({setCurrentPage}) => {
         <button type='submit' className='btn-primary'>Login</button>
         <p className='text-[13px] text-slate-800 mt-3 '>Dont have an account?{" "}
           <button
-        className='font-medium text-primary underline cursor-pointer'
+        className='font-medium text-blue-700 underline cursor-pointer'
         onClick={()=> {
           setCurrentPage("signup")
         }}

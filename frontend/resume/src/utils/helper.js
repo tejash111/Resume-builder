@@ -89,12 +89,7 @@ export const fixTailwindColors = (element) => {
 };
 
 // convert component to image
-export async function captureElementAsImage(element) {
-  if (!element) throw new Error("No element provided");
 
-  const canvas = await html2canvas(element);
-  return canvas.toDataURL("image/png");
-}
 
 //utility to convert base64 data url to a file object
 export const dataURLtoFile = (dataUrl,fileName)=>{
