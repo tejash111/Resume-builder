@@ -69,10 +69,6 @@ const ResumeSchema= new mongoose.Schema(
             year:String,
         },
     ],
-    languages:
-        {
-            name:String,
-        },
     
 },
 {

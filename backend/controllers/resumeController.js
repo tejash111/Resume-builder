@@ -65,13 +65,6 @@ const createResume = async (req,res) => {
                     year:"",
                 },
             ],
-            languages:[
-                {
-                    name:"",
-                    progress:0,
-                },
-            ],
-            interests:[""],
         };
 
         const newResume = await Resume.create({
