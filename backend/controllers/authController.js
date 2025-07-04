@@ -37,7 +37,9 @@ const registerUser = async (req,res,next) => {
 
         res.cookie("token",token,{
           httpOnly:true,
-          maxAge:3 * 24 * 60 * 60 * 1000
+          maxAge:3 * 24 * 60 * 60 * 1000,
+          sameSite: "None",
+          secure: true,   
         });
     }
 
@@ -76,7 +78,9 @@ const loginUser = async (req,res) => {
         const token = genrateToken(user?._id);
     res.cookie("token",token,{
       httpOnly:true,
-      maxAge:3 * 24 * 60 * 60 * 1000
+      maxAge:3 * 24 * 60 * 60 * 1000,
+        sameSite: "None",
+          secure: true,  
     })
 
         //Return user data with jwt

@@ -36,7 +36,7 @@ app.use(
     "/uploads",
     express.static(path.join(__dirname,"uploads"),{
         setHeaders: (res,path) => {
-            res.set("Acess-Control-Allow-Origin", "http://localhost:5173");
+            res.set("Acess-Control-Allow-Origin", "https://pitchperfect-weld.vercel.app");
         },
     })
 );
