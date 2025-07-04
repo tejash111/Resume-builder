@@ -1,13 +1,34 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Modal from '../componets/Modal';
 import Login from './Auth/Login';
 import SignUp from './Auth/SignUp';
 import { UserContext } from '../context/UserContext';
 import ProfileInfoCard from '../componets/cards/profileInfoCard';
-import resumeLogo from '../assets/resumelogo.webp';
-import resumeLogo2 from '../assets/resumelogo2.png';
-import { motion } from 'framer-motion';
+import { FaRobot, FaMagic, FaFileDownload, FaCheckCircle } from 'react-icons/fa';
+
+const features = [
+  {
+    icon: <FaRobot className="text-2xl text-black" />,
+    title: 'AI-Powered Suggestions',
+    desc: 'Get instant, personalized resume feedback and improvements from our AI.'
+  },
+  {
+    icon: <FaMagic className="text-2xl text-black" />,
+    title: 'Instant Formatting',
+    desc: 'Your resume is always perfectly formatted and professional.'
+  },
+  {
+    icon: <FaCheckCircle className="text-2xl text-black" />,
+    title: 'ATS Optimization',
+    desc: 'Boost your chances with resumes optimized for Applicant Tracking Systems.'
+  },
+  {
+    icon: <FaFileDownload className="text-2xl text-black" />,
+    title: 'One-Click Download',
+    desc: 'Export your resume in PDF with a single click.'
+  },
+];
 
 const LandingPage = () => {
   const { user } = useContext(UserContext)
@@ -15,15 +36,6 @@ const LandingPage = () => {
 
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [currentPage, setCurrentPage] = useState("login")
-  const [flipped, setFlipped] = useState(false);
-
-  // Auto-flip every 2 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFlipped(f => !f);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleCTA = () => {
     if (!user) {
@@ -34,58 +46,49 @@ const LandingPage = () => {
   };
 
   return (
-    <div className='w-full min-h-screen bg-[url("/bg.jpg")] bg-cover bg-center")'>
-      
+    <div className='w-full min-h-screen bg-[url("/bg.jpg")] bg-cover bg-center'>
       {/* Navbar/Header at the top */}
-      <header className='w-full flex items-center justify-between  md:px-10 bg-transparent  rounded-full  ml-2 h-13'>
+      <header className='w-full flex items-center justify-between md:px-10 bg-transparent border-b border-black/10 h-16'>
         <div className='text-xl font-bold flex items-center gap-2 '>
           <img src="src/assets/logo.svg" alt="" className='w-10 h-10' />
           Pitch-Perfect
         </div>
         <div>
-          {user ? <ProfileInfoCard /> : <button className='bg-black text-sm font-semibold text-white px-7 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition-colors cursor-pointer' onClick={() => setOpenAuthModal(true)}>
+          {user ? <ProfileInfoCard /> : <button className='bg-black text-sm font-semibold text-white px-7 py-2.5 rounded-lg hover:bg-gray-900 transition-colors cursor-pointer' onClick={() => setOpenAuthModal(true)}>
             Login / Sign Up
           </button>}
         </div>
       </header>
-      {/* Main Content: Two-column hero section */}
-      <div className='w-full flex items-center justify-center min-h-[80vh]'>
-        <div className='container mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between'>
-          {/* Left Side: Title, Para, Button */}
-          <div className='flex-1 flex flex-col items-start justify-center gap-8 max-w-xl ml-10'>
-            <h1 className='text-5xl font-bold mb-4 text-black'>Get Hired or Get Fuck*d, choice is yours!!</h1>
-            <p className='text-lg text-black mb-6'>Craft a standout resume in minutes with our smart and intuitive resume builder.</p>
-            <button className='bg-black text-sm flex items-center justify-center font-semibold text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer' onClick={handleCTA}>
-              Get Started
-            </button>
+      {/* Main Content: Centered hero section with shadcn style */}
+      <div className='w-full flex items-center justify-center min-h-[70vh]'>
+        <div className='container mx-auto px-4 py-6 flex flex-col items-center justify-center'>
+          <div className='flex flex-col items-center justify-center gap-8 max-w-2xl p-10 rounded-2xl shadow-lg border border-black/10 bg-[url("/bg.jpg")] bg-cover bg-center relative overflow-hidden'>
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-0" />
+            <div className="relative z-10 w-full flex flex-col items-center">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="px-3 py-1 rounded-full bg-black text-white text-xs font-semibold shadow flex items-center gap-2">
+                  <FaRobot className="inline-block text-lg text-white" /> AI Resume Builder
+                </span>
+              </div>
+              <h1 className='text-5xl font-bold mb-2 text-black text-center'>Get Hired or Get Fuck*d, choice is yours!!</h1>
+              <p className='text-lg text-black mb-6 text-center max-w-xl'>Craft a standout resume in minutes. Get instant, AI-powered feedback, perfect formatting, and one-click downloads. Your next job is just a resume away.</p>
+              <button className='bg-black text-lg font-bold flex items-center justify-center text-white px-6 py-2 rounded-lg shadow hover:bg-gray-900 transition-colors cursor-pointer' onClick={handleCTA}>
+                Get Started Free
+              </button>
+            </div>
           </div>
-          {/* Right Side: Logo Image with Flip Animation */}
-          <div className='flex-1 flex items-center justify-center mt-10 md:mt-0'>
-            <motion.div
-              className="relative w-[220px] h-[320px] cursor-pointer"
-              style={{ perspective: 1200 }}
-              onClick={() => setFlipped(f => !f)}
-              onMouseEnter={() => setFlipped(true)}
-              onMouseLeave={() => setFlipped(false)}
-            >
-              <motion.img
-                src={resumeLogo}
-                alt="Resume Logo Front"
-                className="absolute w-full h-full object-contain rounded-xl shadow-lg scale-120 "
-                style={{ backfaceVisibility: 'hidden' }}
-                animate={{ rotateY: flipped ? 180 : 0 }}
-                transition={{ duration: 0.7, ease: 'easeInOut' }}
-              />
-              <motion.img
-                src={resumeLogo2}
-                alt="Resume Logo Back"
-                className="absolute w-full h-full object-contain rounded-xl shadow-lg scale-120"
-                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-                animate={{ rotateY: flipped ? 0 : -180 }}
-                transition={{ duration: 0.7, ease: 'easeInOut' }}
-              />
-            </motion.div>
-          </div>
+        </div>
+      </div>
+      {/* Features Section */}
+      <div className="w-full flex justify-center py-10">
+        <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl w-full px-4 ">
+          {features.map((f, i) => (
+            <div key={i} className="flex flex-col items-center bg-white rounded-xl p-6 shadow border border-black/10">
+              {f.icon}
+              <h3 className="mt-3 text-lg font-bold text-black text-center">{f.title}</h3>
+              <p className="text-gray-700 text-center mt-2 text-sm">{f.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
       <Modal
@@ -101,7 +104,6 @@ const LandingPage = () => {
           {currentPage === "signup" && (<SignUp setCurrentPage={setCurrentPage} />)}
         </div>
       </Modal>
-     
     </div>
   )
 }

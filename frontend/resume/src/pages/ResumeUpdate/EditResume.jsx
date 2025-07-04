@@ -19,6 +19,8 @@ import { dataURLtoFile, fixTailwindColors } from '../../utils/helper';
 import { Toaster, toast } from "react-hot-toast"
 import Modal from '../../componets/Modal';
 import ThemeSelector from './ThemeSelector';
+import { URL } from '../../AI/AI';
+import { AiOutlineLoading } from "react-icons/ai";
 
 const EditResume = () => {
   const { resumeId } = useParams()
@@ -34,19 +36,13 @@ const EditResume = () => {
   const [openAIReview, setOpenAIReview] = useState(false)
 
   const [currentPage, setCurrentPage] = useState('profile-info')
+  const [aiData, setAiData] = useState(null)
   const [resumeData, setResumeData] = useState({
     title: "",
-    thumbnailLink: "",
     profileInfo: {
-      profileImg: null,
-      profilePreviewUrl: '',
       fullName: "",
       designation: "",
       summary: "",
-    },
-    template: {
-      theme: "",
-      colorPalette: "",
     },
     contactInfo: {
       email: "",
@@ -93,13 +89,6 @@ const EditResume = () => {
         year: "",
       }
     ],
-    languages: [
-      {
-        name: "",
-        progress: 0
-      },
-    ],
-    interests: [""],
   });
   console.log(resumeData);
 
@@ -396,9 +385,6 @@ const EditResume = () => {
           skills: resumeInfo?.skills || prevState?.skills,
           projects: resumeInfo?.projects || prevState?.projects,
           certifications: resumeInfo?.certifications || prevState?.certifications,
-          languages: resumeInfo?.languages || prevState?.languages,
-          interests: resumeInfo?.interests || prevState?.interests,
-
         }))
       }
     } catch (error) {
@@ -409,47 +395,20 @@ const EditResume = () => {
   //upload thumbnail and resume profile img
   const uploadResumeImages = async () => {
     try {
-      setIsLoading(true)
-
-
-
-      //convert base64 to file
-      const thumbnailFile = dataURLtoFile(
-        imageDataUrl,
-        `resume-${resumeId}.png`
-      );
-
-      const profileImageFile = resumeData?.profileInfo?.profileImg || null;
-
-      const formData = new FormData();
-      if (profileImageFile) formData.append("profileImage", profileImageFile);
-      if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
-
-      const uploadResponse = await axiosInstance.put(
-        API_PATHS.RESUME.UPLOAD_IMAGES(resumeId),
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      const { thumbnailLink, profilePreviewUrl } = uploadResponse.data;
-
-      console.log("RESUME_DATA___", resumeData);
-
-      //call the second api to update other reusme data
-      await updateResumeDetails(thumbnailLink, profilePreviewUrl);
-
+      setIsLoading(true);
+      // Directly update resume details, no image upload
+      await updateResumeDetails();
       toast.success("Resume Updated successfully");
-      navigate("/dashboard")
-
+      navigate("/dashboard");
     } catch (error) {
-      console.error("error uploading images", error);
-      toast.error("failed to uplaod images");
+      console.error("error updating resume", error);
+      toast.error("failed to update resume");
     } finally {
       setIsLoading(false);
     }
   }
 
-  const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {
+  const updateResumeDetails = async () => {
     try {
       setIsLoading(true);
 
@@ -457,11 +416,6 @@ const EditResume = () => {
         API_PATHS.RESUME.UPDATE(resumeId),
         {
           ...resumeData,
-          thumbnailLink: thumbnailLink || "",
-          profileInfo: {
-            ...resumeData.profileInfo,
-            profilePreviewUrl: profilePreviewUrl || "",
-          },
         }
       );
     } catch (err) {
@@ -526,6 +480,7 @@ Return result in JSON format like:
   "ats_score": <score>,
   "improvements": [ ... ]
 }
+  dont add json before and after the result
 
 Here is the resume data:
 ${JSON.stringify(resumeData)}
@@ -536,6 +491,45 @@ ${JSON.stringify(resumeData)}
     ]
   }
 
+  const handleAiReview = async () => {
+    setIsLoading(true)
+    setOpenPreviewModal(true)
+    try {
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(Prompt)
+      });
+
+      const data = await response.json();
+
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (aiText) {
+        if (aiText) {
+          try {
+            const cleaned = aiText
+              .replace(/```json/g, '')
+              .replace(/```/g, '')
+              .trim();
+            const parsed = JSON.parse(cleaned);
+            setAiData(parsed);
+            setIsLoading(false);
+          } catch (e) {
+            console.error("Failed to parse AI response as JSON:", aiText, e);
+            setAiData(null);
+          }
+        }
+      } else {
+        console.error("AI response format unexpected:", data);
+      }
+    } catch (error) {
+      console.error("Error generating summary:", error);
+    }
+  };
+  console.log(aiData);
 
 
   return (
@@ -566,7 +560,7 @@ ${JSON.stringify(resumeData)}
               <span className='hidden md:block'>Get AI Review</span>
             </button>
 
-            <button className='btn-small-light ' onClick={() => setOpenPreviewModal(true)}>
+            <button className='btn-small-light ' onClick={handleAiReview}>
               <LuDownload className='text-[16px]' />
               <span className='hidden md:block'>Preview and download</span>
             </button>
@@ -655,8 +649,33 @@ ${JSON.stringify(resumeData)}
       >
         <div className="flex justify-center items-start w-full max-h-[90vh]  overflow-auto  ">
           <div className='flex justify-between'>
-            <div className='AI DIV'>
-              laskdjfasdlfkjaslkdfjaslkdkfjalskdfjaslkdfjaslkdjf
+            <div className="w-80 bg-white rounded-lg shadow p-6 flex flex-col items-center">
+              <h2 className="text-xl font-bold mb-2 text-gray-800">AI Resume Review</h2>
+
+              {aiData ? (
+                <>
+                  <div className="flex flex-col items-center mb-4">
+                    <span className="text-sm text-gray-500">ATS Score</span>
+                    <div className="text-4xl font-extrabold text-green-600 mb-1">{aiData.ats_score ?? '--'}</div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                      <div
+                        className="bg-green-500 h-2.5 rounded-full"
+                        style={{ width: `${(aiData.ats_score / 10) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <h3 className="text-md font-semibold mb-2 text-gray-700">Improvements</h3>
+                    <ul className="list-disc pl-5 space-y-1 text-gray-700 text-sm">
+                      {aiData.improvements?.map((tip, idx) => (
+                        <li key={idx}>{tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <div className="text-gray-500 text-center"><AiOutlineLoading className='animate-spin text-2xl'/></div>
+              )}
             </div>
             <div
               ref={resumeDownloadRef}

@@ -53,7 +53,6 @@ const TemplateOne = ({
     const resumeRef = useRef(null);
     const [basewidth, setBaseWidth] = useState(800); //default value
     const [scale, setScale] = useState(1);
-    console.log(JSON.stringify(resumeData));
     
 
     useEffect(() => {
