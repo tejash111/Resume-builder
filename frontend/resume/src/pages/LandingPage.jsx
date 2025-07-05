@@ -6,7 +6,6 @@ import SignUp from './Auth/SignUp';
 import { UserContext } from '../context/UserContext';
 import ProfileInfoCard from '../componets/cards/profileInfoCard';
 import { FaRobot, FaMagic, FaFileDownload, FaCheckCircle } from 'react-icons/fa';
-import logo from '@/assets/logo.svg';
 
 const features = [
   {
@@ -51,7 +50,7 @@ const LandingPage = () => {
       {/* Navbar/Header at the top */}
       <header className='w-full flex items-center justify-between md:px-10 bg-transparent border-b border-black/10 h-16'>
         <div className='text-xl font-bold flex items-center gap-2 '>
-          <img src={logo} alt="" className='w-10 h-10' />
+          <img src="logo.svg" alt="" className='w-10 h-10' />
           Pitch-Perfect
         </div>
         <div>

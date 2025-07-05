@@ -13,7 +13,7 @@ const app = express();
 
 //middleware to handle cors
 app.use(cors({
-  origin: "https://pitchperfect-weld.vercel.app",
+  origin: "https://pitchperfect-weld.vercel.app " || "http://localhost:5173",
   credentials: true
 }));
 
