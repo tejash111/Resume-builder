@@ -21,25 +21,23 @@ const DEFAULT_THEME = ["#EBFDFF", "#A1F4FD", "#CEFAFE", "#00B8DB", "#4A5565"];
 const Title = ({ text, color }) => {
     return (
         <div className="relative w-fit mb-2.5">
-            <span
-                className="absolute bottom-0 left-0 w-full h-2"
-                style={{ backgroundColor: color }}
-            />
             <h2 className="relative text-sm font-bold uppercase ">{text}</h2>
         </div>
     );
 };
 
 const SocialLinks = ({ linkedin, github, website }) => (
-    <div className="flex flex-wrap justify-center gap-4  text-sm">
+    <div className="flex flex-wrap justify-center gap-1  text-sm">
         {linkedin && (
-            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline"><RiLinkedinLine />LinkedIn</a>
+            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline">LinkedIn</a>
         )}
+        |
         {github && (
-            <a href={github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline"><LuGithub />GitHub</a>
+            <a href={github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline">GitHub</a>
         )}
+        |
         {website && (
-            <a href={website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline"><LuRss />Portfolio</a>
+            <a href={website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline">Portfolio</a>
         )}
     </div>
 );
@@ -53,7 +51,7 @@ const TemplateOne = ({
     const resumeRef = useRef(null);
     const [basewidth, setBaseWidth] = useState(800); //default value
     const [scale, setScale] = useState(1);
-    
+
 
     useEffect(() => {
         const actualBaseWidth = resumeRef.current.offsetWidth;
@@ -74,52 +72,64 @@ const TemplateOne = ({
         >
             {/* Header */}
             <div className="flex flex-col items-center text-center border-b pb-2 mt-3">
-              
-            
-                <h1 className='text-4xl font-bold '>{resumeData.profileInfo?.fullName}</h1>
-                <h1 className='text-large '>{resumeData.profileInfo?.designation}</h1>
 
-                <div className="flex flex-wrap justify-center gap-3 mt-2 text-sm text-gray-700">
+
+                <h1 className='text-4xl font-bold uppercase'>{resumeData.profileInfo?.fullName}</h1>
+                <h1 className='text-xl font-normal uppercase '>{resumeData.profileInfo?.designation}</h1>
+
+                <div className="flex flex-wrap justify-center gap-1 mt-2 text-sm ">
                     {resumeData.contactInfo?.location && (
-                        <span className="flex items-center gap-1"><CiLocationOn/>{resumeData.contactInfo.location}</span>
+                        <span className="flex items-center gap-1">{resumeData.contactInfo.location}</span>
                     )}
+                    |
                     {resumeData.contactInfo?.email && (
-                        <span className="flex items-center gap-1"><LuMail />{resumeData.contactInfo.email}</span>
+                        <span className="flex items-center gap-1">{resumeData.contactInfo.email}</span>
                     )}
+                    |
                     {resumeData.contactInfo?.phone && (
-                        <span className="flex items-center gap-1"><LuPhone />{resumeData.contactInfo.phone}</span>
+                        <span className="flex items-center gap-1">{resumeData.contactInfo.phone}</span>
                     )}
+                    |
+
+
+                    <SocialLinks
+                        linkedin={resumeData.contactInfo?.linkedin}
+                        github={resumeData.contactInfo?.github}
+                        website={resumeData.contactInfo?.website}
+                    />
                 </div >
-                <div className='text-gray-700 text-sm'>
-                 <SocialLinks
-                    linkedin={resumeData.contactInfo?.linkedin}
-                    github={resumeData.contactInfo?.github}
-                    website={resumeData.contactInfo?.website}
-                />
-                </div>
-                
+
+
             </div>
 
-            
+
             <div className="mt-2">
                 <div>
                     <h1 className='text-xl font-bold '>SUMMARY</h1>
-                    <hr className='opacity-40 '/>
+                    <hr className='opacity-40 ' />
                     <h1 className='mt-1'>{resumeData.profileInfo?.summary}</h1>
                 </div>
                 {/* Skills & Tools */}
-                <div className='mt-3'>
-                    <h1 className='text-xl font-bold'>TECHNICAL SKILLS</h1>
-                    <hr className='opacity-40 mb-1'/>
-                    <h1>{resumeData.skills?.name}</h1>
+                <div className='flex gap-10'>
+                    <div className='mt-3 w-1/2'>
+                        <h1 className='text-xl font-bold'>PROFESSIONAL SKILLS</h1>
+                        <hr className='opacity-40 mb-1 flex ' />
+                        <h1>{resumeData.skills?.prof}</h1>
+                    </div>
+                    <div className='mt-3 w-1/2'>
+                        <h1 className='text-xl font-bold'>TECHNICAL SKILLS</h1>
+                        <hr className='opacity-40 mb-1 ' />
+                        <h1>{resumeData.skills?.name}</h1>
+                    </div>
                 </div>
-                
+
+
             </div>
 
             {/* Projects */}
             <div className="mt-3">
                 <h1 className='text-xl font-bold '>PROJECTS</h1>
-                <hr className='opacity-40 '/>
+                <hr className='opacity-40 ' />
                 {resumeData.projects?.map((project, index) => (
                     <ProjectInfo
                         key={`project_${index}`}
@@ -127,16 +137,15 @@ const TemplateOne = ({
                         description={project.description}
                         githubLink={project.github}
                         liveDemoUrl={project.liveDemo}
-                        bgColor={themeColors[2]}
                     />
                 ))}
             </div>
-            
+
 
             {/* Work Experience */}
             <div className="mt-3">
                 <h1 className='text-xl font-bold '>EXPERIENCE</h1>
-                <hr className='opacity-40 mb-1'/>
+                <hr className='opacity-40 mb-1' />
                 {resumeData.workExperience?.map((data, index) => (
                     <WorkExperience
                         key={`work_${index}`}
@@ -152,7 +161,7 @@ const TemplateOne = ({
             {/* Education */}
             <div className="mt-3">
                 <h1 className='text-xl font-bold '>EDUCATION</h1>
-                 <hr className='opacity-40 mb-1'/>
+                <hr className='opacity-40 mb-1' />
                 {resumeData.education?.map((data, index) => (
                     <EducationInfo
                         key={`education_${index}`}
@@ -163,13 +172,13 @@ const TemplateOne = ({
                 ))}
             </div>
 
-            
+
 
             {/* Certifications */}
             {resumeData.certifications && resumeData.certifications.length > 0 && (
                 <div className="mt-3">
                     <h1 className='text-xl font-bold '>CERTIFICATION</h1>
-                 <hr className='opacity-40 mb-1'/>
+                    <hr className='opacity-40 mb-1' />
                     <div className="grid grid-cols-2 gap-2">
                         {resumeData.certifications.map((data, index) => (
                             <CertificationInfo
@@ -177,7 +186,6 @@ const TemplateOne = ({
                                 title={data.title}
                                 issuer={data.issuer}
                                 year={data.year}
-                                bgColor={themeColors[2]}
                             />
                         ))}
                     </div>

@@ -7,6 +7,7 @@ import axiosInstance from '../../utils/axiosInstance'
 import { API_PATHS } from '../../utils/ApiPaths'
 import { UserContext } from '../../context/UserContext'
 import uploadImage from '../../utils/UploadImage'
+import toast from 'react-hot-toast'
 
 const SignUp = ({setCurrentPage}) => {
   const [profilepic,setProfilePic]=useState(null)
@@ -15,6 +16,7 @@ const SignUp = ({setCurrentPage}) => {
   const [password,setPassword]=useState("")
 
   const [error,setError]=useState(null)
+  const [loading,setLoading]=useState(false)
 
   const {updateUser} = useContext(UserContext);
   const navigate=useNavigate();
@@ -43,11 +45,7 @@ const SignUp = ({setCurrentPage}) => {
 
     try{
 
-      //upload image if present 
-      if (profilepic){
-        const imageUploadRes =await uploadImage(profilepic)
-        profileImageUrl= imageUploadRes.imageUrl || "";
-      }
+      setLoading(true);
 
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
         name : fullName,
@@ -59,9 +57,11 @@ const SignUp = ({setCurrentPage}) => {
       const {token} = response.data
 
       if (token){
+        setLoading(false)
         localStorage.setItem("token",token);
         updateUser(response.data)
         navigate("/dashboard");
+        toast('Login successfully')
       }
     }catch(error){
       if (error.response && error.response.data.message){
@@ -73,7 +73,7 @@ const SignUp = ({setCurrentPage}) => {
   }
 
   return (
-    <div className='w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center border border-gray-300 shadow-md p-4 rounded-lg shadow-lg rounded-lg'>
+    <div className='w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center border border-gray-300 '>
       <h3 className='text-lg font-semibold text-black'>Create an Account</h3>
       <p className='text-xs text-slate-700 mt-[5px]mb-6 '>Join us today by entering your details below.</p>
 

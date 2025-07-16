@@ -47,6 +47,7 @@ const createResume = async (req,res) => {
             skills:
                 {
                     name:"",
+                    prof:""
 
                 },
             

@@ -10,6 +10,7 @@ const Login = ({setCurrentPage}) => {
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
   const [error,setError]=useState(null)
+  const [laoding,setLoading]=useState(false)
 
  const {updateUser} = useContext(UserContext)
   const navigate = useNavigate()
@@ -31,24 +32,27 @@ const Login = ({setCurrentPage}) => {
 
     //login api call
     try{
+      setLoading(true)
         const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN , {
           email,
           password,
         });
 
         const {token} =response.data;
-
+        setLoading(false)
         updateUser(response.data)
         navigate("/dashboard")
     }catch(error){
+      setLoading(false)
         if (error.response && error.response.data.message) {
+          
           setError(error.response.data.message);
         }
         console.log(error);  
     }
   };
   return (
-    <div className='w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center border border-gray-300 shadow-md p-4 rounded-lg shadow-lg rounded-lg'>
+    <div className='w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center border border-gray-300 '>
         <h3 className='text-lg font-semibold text-black'> Welcome Back </h3>
       <p className='text-xs text-slate-700 mt-[5px] mb-6'>
         Please enter your details to log in 
@@ -64,9 +68,10 @@ const Login = ({setCurrentPage}) => {
 
         {error && <p className='text-red-500 text-xs pb-2.5 '>{error}</p>}
 
-        <button type='submit' className='btn-primary'>Login</button>
+        <button disabled={laoding} type='submit'  className='btn-primary'>{laoding? "Logging in..." : "Login"}</button>
         <p className='text-[13px] text-slate-800 mt-3 '>Dont have an account?{" "}
           <button
+          
         className='font-medium text-blue-700 underline cursor-pointer'
         onClick={()=> {
           setCurrentPage("signup")

@@ -50,7 +50,7 @@ Output only the improved summary.
   };
 
   return (
-    <div className='px-5 pt-5 '>
+    <div className='px-5 pt-5 backdrop-blur-[2px] '>
       <h2 className='text-lg text-gray-900 font-semibold'>personal Information</h2>
 
       <div className='mt-4'>

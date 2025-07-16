@@ -16,7 +16,7 @@ const WorkExperience = ({
           </h3>
           <p className="text-[15px] text-black font-medium">{role}</p>
         </div>
-        <p className="text-sm font-bold " style={{ color: durationColor }}>
+        <p className="text-sm font-bold ">
           {duration}
         </p>
       </div>

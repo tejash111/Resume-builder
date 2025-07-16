@@ -6,19 +6,11 @@ const ResumeSummaryCard = ({imgUrl,title,lastUpdated,onSelect}) => {
   const [bgColor,setBgColor]=useState('#ffffff');
 
   useEffect(()=>{
-    if (imgUrl) {
-      getLightColorFromImage(imgUrl)
-       .then((color)=>{
-        setBgColor(color);
-       })
-       .catch (()=>{
-        setBgColor('#ffffff')
-       })
-    }
+    
   })
   return (
-    <div onClick={onSelect} className='h-[300px] flex flex-col items-center justify-between bg-white rounded-lg border border-gray-200 hover:border-purple-300 overflow-hidden cursor-pointer'
-    style={{backgroundColor : bgColor}}
+    <div onClick={onSelect} className='h-[300px] flex flex-col items-center justify-between backdrop-blur-[22px] rounded-lg border border-gray-200 hover:border-purple-300 overflow-hidden cursor-pointer'
+    
     > 
         <div className='p-4'>
             {
@@ -27,7 +19,7 @@ const ResumeSummaryCard = ({imgUrl,title,lastUpdated,onSelect}) => {
                 ) : (<div></div>
            ) }
         </div>
-        <div className='w-full bg-white px-4 py-3'>
+        <div className='w-full backdrop-blur-[22px] px-4 py-3'>
             <h5 className='text-sm font-medium truncate overflow-hidden whitespace-nowrap'>{title}</h5>
             <p className='text-xs font-medium text-gray-500 mt-0.5 '>last updated: {lastUpdated}</p>
         </div>

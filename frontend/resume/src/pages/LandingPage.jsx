@@ -50,7 +50,7 @@ const LandingPage = () => {
       {/* Navbar/Header at the top */}
       <header className='w-full flex items-center justify-between md:px-10 bg-transparent border-b border-black/10 h-16'>
         <div className='text-xl font-bold flex items-center gap-2 '>
-          <img src="logo.svg" alt="" className='w-10 h-10' />
+          <img src="/logo.svg" alt="" className='w-10 h-10' />
           Pitch-Perfect
         </div>
         <div>
@@ -61,9 +61,9 @@ const LandingPage = () => {
       </header>
       {/* Main Content: Centered hero section with shadcn style */}
       <div className='w-full flex items-center justify-center min-h-[70vh]'>
-        <div className='container mx-auto px-4 py-6 flex flex-col items-center justify-center'>
+        <div className='container mx-auto px-4 py-6 flex flex-col items-center justify-center maindiv'>
           <div className='flex flex-col items-center justify-center gap-8 max-w-2xl p-10 rounded-2xl shadow-lg border border-black/10 bg-[url("/bg.jpg")] bg-cover bg-center relative overflow-hidden'>
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-0" />
+            <div className="absolute inset-0 backdrop-blur-[50px] " />
             <div className="relative z-10 w-full flex flex-col items-center">
               <div className="flex items-center gap-3 mb-2">
                 <span className="px-3 py-1 rounded-full bg-black text-white text-xs font-semibold shadow flex items-center gap-2">
@@ -83,7 +83,7 @@ const LandingPage = () => {
       <div className="w-full flex justify-center py-10">
         <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl w-full px-4 ">
           {features.map((f, i) => (
-            <div key={i} className="flex flex-col items-center bg-white rounded-xl p-6 shadow border border-black/10">
+            <div key={i} className="flex flex-col items-center backdrop-blur-[52px] rounded-xl p-6 shadow border border-black/10">
               {f.icon}
               <h3 className="mt-3 text-lg font-bold text-black text-center">{f.title}</h3>
               <p className="text-gray-700 text-center mt-2 text-sm">{f.desc}</p>

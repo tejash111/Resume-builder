@@ -6,7 +6,7 @@ import { LuPlus, LuTrash2 } from "react-icons/lu";
 const CertificateInfoForm = ({ certificateInfo, updateArrayItems, addArrayItem, removeArrayItem }) => {
     return (
         <div className='px-5 pt-5'>
-            <h2 className='text-lg font-semibold text-gray-900'>Certifications</h2>
+            <h2 className='text-lg font-semibold text-gray-900'>Awards & Certifications</h2>
 
             <div className='mt-4 flex flex-col gap-4 mb-3'>
                 {certificateInfo.map((cert, index) => (

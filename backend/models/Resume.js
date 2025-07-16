@@ -52,8 +52,10 @@ const ResumeSchema= new mongoose.Schema(
     skills: 
         {
             name:String,
+            prof:String
            
         },
+        
     projects:[
         {
             title:String,

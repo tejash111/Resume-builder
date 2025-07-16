@@ -11,6 +11,7 @@ const Modal = ({
     actionBtnIcon=null,
     actionBtnText,
     onActionClick,
+    description,
     }) => {
         if(!isOpen) return null;
   return (
@@ -22,9 +23,10 @@ const Modal = ({
             {!hideHeader && (
                 <div className='flex items-center justify-between p-4 '>
                     <h3 className='md:text-lg font-medium text-gray-900'>{title}</h3>
+                    <p className='text-xs text-gray-700'>{description}</p>
                     {showActionBtn && (
                          <button
-                         className='btn-small-light mr-12 '
+                         className='btn-small mr-12 '
                          onClick={()=> onActionClick()}
                          >
                              {actionBtnIcon}

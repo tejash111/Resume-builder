@@ -11,6 +11,7 @@ const WorkExperienceForm = ({ workExperience, updateArrayItems, addArrayItem, re
   return (
     <div className='px-5 pt-5'>
       <h2 className='text-lg font-semibold text-gray-900'>Work experience</h2>
+      <p className='text-xs mt-2 text-gray-600'>For freshers u can write clubs,hackathons internship etc.. </p>
 
       <div className='mt-4 flex flex-col gap-4 mb-3'>
         {workExperience.map((experience, index) => { 

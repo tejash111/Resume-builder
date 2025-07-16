@@ -14,12 +14,6 @@ const ProfileInfoCard = () => {
   return (
   user && (
     <div className='flex items-center'>
-        <img
-        src={user.profileImageUrl || ""}
-        alt='Profile Img'
-        className='w-11 h-11 bg-gray-300 rounded-full mr-3 '
-        
-        />
         <div>
             <div className='text-[15px] font-bold leading-3'>{user.name || ''}</div>
             <button 

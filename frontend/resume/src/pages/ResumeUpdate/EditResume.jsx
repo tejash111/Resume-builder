@@ -72,6 +72,7 @@ const EditResume = () => {
     skills:
     {
       name: "",
+      prof:"",
     },
 
     projects: [
@@ -536,7 +537,7 @@ ${JSON.stringify(resumeData)}
     <DashboardLayout>
       <div><Toaster /></div>
       <div className=' mx-auto'>
-        <div className='flex items-center justify-between gap-5 bg-white rounded-lg border border-gray-100 py-3 px-4 mb-4  '>
+        <div className='flex items-center justify-between gap-5 backdrop-blur-[22px] rounded-lg border border-gray-100 py-3 px-4 mb-4  '>
           <TitleInput
             title={resumeData.title}
             setTitle={(value) =>
@@ -570,7 +571,7 @@ ${JSON.stringify(resumeData)}
         </div>
 
         <div className='grid grid-cols-1  md:grid-cols-2 gap-5'>
-          <div className='bg-white rounded-lg border border-purple-100 overflow-hidden '>
+          <div className='rounded-lg border backdrop-blur-[22px]  border-purple-100 overflow-hidden '>
 
             <StepProgress progress={90} />
             {renderForm()}
@@ -608,94 +609,71 @@ ${JSON.stringify(resumeData)}
             <RenderResume
               templateId={resumeData?.template?.theme || ""}
               resumeData={resumeData}
-              colorPalette={resumeData?.template?.colorPalette || []}
               containerWidth={basewidth}
             />
           </div>
         </div>
       </div>
 
-      <Modal
-        isOpen={openThemeSelector}
-        onClose={() => setOpenThemeSelector(false)}
-        title="Chnage theme"
-      >
-        <div className='w-[90vw] h-[80vh]'>
-          <ThemeSelector
-            selectedTheme={resumeData?.template}
-            setSelectedTheme={(value) => {
-              setResumeData((prevState) => ({
-                ...prevState,
-                template: value || prevState.template
-              }))
-            }}
-            resumeData={null}
-            onClose={() => setOpenThemeSelector(false)}
-          />
-        </div>
-      </Modal>
 
 
 
 
       <Modal
-        isOpen={openPreviewModal}
-        onClose={() => setOpenPreviewModal(false)}
-        title={resumeData.title}
-        showActionBtn
-        actionBtnText="Download"
-        actionBtnIcon={<LuDownload className="text-[16px]" />}
-        onActionClick={() => reactToPrintFn()}
-      >
-        <div className="flex justify-center items-start w-full max-h-[90vh]  overflow-auto  ">
-          <div className='flex justify-between'>
-            <div className="w-80 bg-white rounded-lg shadow p-6 flex flex-col items-center">
-              <h2 className="text-xl font-bold mb-2 text-gray-800">AI Resume Review</h2>
+  isOpen={openPreviewModal}
+  onClose={() => setOpenPreviewModal(false)}
+  title={resumeData.title}
+  description="Use Save as PDF option not Microsoft to PDF"
+  showActionBtn
+  actionBtnText="Download"
+  actionBtnIcon={<LuDownload className="text-[16px]" />}
+  onActionClick={() => reactToPrintFn()}
+>
+  <div className="flex flex-col md:flex-row gap-4 w-full max-h-[90vh] overflow-auto p-2">
+    {/* AI Review */}
+    <div className="w-full md:w-80 bg-white rounded-lg shadow p-4 flex flex-col items-center">
+      <h2 className="text-xl font-bold mb-2 text-gray-800">AI Resume Review</h2>
 
-              {aiData ? (
-                <>
-                  <div className="flex flex-col items-center mb-4">
-                    <span className="text-sm text-gray-500">ATS Score</span>
-                    <div className="text-4xl font-extrabold text-green-600 mb-1">{aiData.ats_score ?? '--'}</div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                      <div
-                        className="bg-green-500 h-2.5 rounded-full"
-                        style={{ width: `${(aiData.ats_score / 10) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="w-full">
-                    <h3 className="text-md font-semibold mb-2 text-gray-700">Improvements</h3>
-                    <ul className="list-disc pl-5 space-y-1 text-gray-700 text-sm">
-                      {aiData.improvements?.map((tip, idx) => (
-                        <li key={idx}>{tip}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </>
-              ) : (
-                <div className="text-gray-500 text-center"><AiOutlineLoading className='animate-spin text-2xl'/></div>
-              )}
-            </div>
-            <div
-              ref={resumeDownloadRef}
-              className="relative bg-white resume-print"
-              style={{
-                width: '210mm',
-                minHeight: '297mm',
-                margin: '0 auto',
-              }}
-            >
-              <RenderResume
-                templateId={resumeData?.template?.theme || ""}
-                resumeData={resumeData}
-                colorPalette={resumeData?.template?.colorPalette || []}
-              />
+      {aiData ? (
+        <>
+          <div className="flex flex-col items-center mb-4 w-full">
+            <span className="text-sm text-gray-500">ATS Score</span>
+            <div className="text-4xl font-extrabold text-green-600 mb-1">{aiData.ats_score ?? '--'}</div>
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+              <div
+                className="bg-green-500 h-2.5 rounded-full"
+                style={{ width: `${(aiData.ats_score / 10) * 100}%` }}
+              ></div>
             </div>
           </div>
+          <div className="w-full">
+            <h3 className="text-md font-semibold mb-2 text-gray-700">Improvements</h3>
+            <ul className="list-disc pl-5 space-y-1 text-gray-700 text-sm">
+              {aiData.improvements?.map((tip, idx) => (
+                <li key={idx}>{tip}</li>
+              ))}
+            </ul>
+          </div>
+        </>
+      ) : (
+        <div className="text-gray-500 text-center"><AiOutlineLoading className='animate-spin text-2xl' /></div>
+      )}
+    </div>
 
-        </div>
-      </Modal>
+    {/* Resume Preview */}
+    <div
+      ref={resumeDownloadRef}
+      className="relative bg-white resume-print w-full md:w-[210mm] min-h-[297mm] mx-auto"
+    >
+      <RenderResume
+        templateId={resumeData?.template?.theme || ""}
+        resumeData={resumeData}
+        colorPalette={resumeData?.template?.colorPalette || []}
+      />
+    </div>
+  </div>
+</Modal>
+
 
     </DashboardLayout>
   )
